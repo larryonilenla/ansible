@@ -1,0 +1,26 @@
+---
+- name: Create a Proxmox VM
+  hosts: localhost  # Runs on control node
+  tasks:
+    - name: Create new VM
+      community.proxmox.proxmox_kvm:
+        api_host: 192.168.1.100
+        api_user: root
+        api_token_id: c1e333a3-2f13-4ab3-b8b6-086bd09b5ac3
+        api_token_secret: UUID
+        #api_password: yourpassword  # Or use api_token_id and api_token_secret
+        validate_certs: false  # Set to true in production with valid certs
+        name: my-test-vm
+        node: your-proxmox-node  # e.g., pve1
+        vmid: 105  # Optional; auto-assigns if omitted
+        state: present
+        cores: 2
+        memory: 2048  # In MB
+        net:
+          net0: 'virtio,bridge=vmbr0'  # Network interface (bridge to your network)
+        scsi:
+          scsi0: 'local-lvm:10'  # 10GB disk on storage 'local-lvm'
+        boot: 'order=scsi0;net0'  # Boot from disk then network
+        agent: 1  # Enable QEMU Guest Agent
+        cloudinit: true  # If using cloud-init template
+      register: vm_creation

@@ -1,0 +1,39 @@
+c1e333a3-2f13-4ab3-b8b6-086bd09b5ac3
+root@pam!UUID
+
+
+
+/Users/olanrewajuonilenla/Downloads
+    sudo apt install openssh-server # For Debian/Ubuntu-based systems
+    sudo dnf install openssh-server # For Fedora/RHEL-based systems
+    sudo pacman -S openssh # For Arch-based systems
+
+
+        sudo apt install python3 # For Debian/Ubuntu-based systems
+    sudo dnf install python3 # For Fedora/RHEL-based systems
+    sudo pacman -S python # For Arch-based systems
+
+    sudo systemctl enable sshd
+    sudo systemctl start sshd
+
+    sudo firewall-cmd --add-service=ssh --permanent
+    sudo firewall-cmd --reload
+
+
+ssh-copy-id admin@192.168.1.85
+ssh-copy-id root@192.168.1.86
+ssh-copy-id root@192.168.1.87
+ssh-copy-id admin@192.168.1.78
+
+systemctl daemon-reload
+systemctl restart ssh.socket
+
+grep -r PasswordAuthentication /etc/ssh -l | xargs -n 1 sed -i 's/#\s*PasswordAuthentication\s.*$/PasswordAuthentication yes/; s/^PasswordAuthentication\s*no$/PasswordAuthentication yes/'
+
+ps aux | grep <VMID> # will show you the kvm process ID running your VMID
+kill -9 <PID> # you can now kill it with the process ID
+
+
+https://github.com/larryonilenla/ansible
+
+git remote add origin https://github.com/larryonilenla/ansible
