@@ -1,0 +1,26 @@
+- hosts: RHEL2VM
+  become: true
+
+  tasks:
+    - name: Install Apache
+      package:
+        name: "{{ 'apache2' if ansible_facts['os_family'] == 'Debian' else 'httpd' }}"
+        state: present
+
+    - name: Ensure Apache is started and enabled
+      service:
+        name: "{{ 'apache2' if ansible_facts['os_family'] == 'Debian' else 'httpd' }}"
+        state: started
+        enabled: yes
+
+    - name: Allow HTTP through the firewall on RedHat-based systems
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+        immediate: yes
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Reload firewall to apply changes
+      command: firewall-cmd --reload
+      when: ansible_facts['os_family'] == "RedHat"

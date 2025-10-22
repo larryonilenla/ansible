@@ -10,7 +10,11 @@ ansible AlpineCT -b -m apt -a "name=python3 state=present update_cache=yes"
 ansible AlpineCT -b -m dnf -a "name=python3 state=present update_cache=yes"
 ansible AlpineCT -b -m service -a "name=chronyd state=started \ enabled=yes"
 ansible AlpineCT -b -m apt -a "name=chrony state=present"  
+ansible all -m apt -a "upgrade=dist" 
+ansible AlpineLinuxCT -m community.general.apk -a "upgrade=yes update_cache=yes"
 
 Don’t run chronyd inside a container
 In LXC containers, the host system handles time synchronization.
 So inside an Alpine container, you can safely disable chronyd entirely:
+
+Add admin to the sudoers file: usermod -aG wheel admin
