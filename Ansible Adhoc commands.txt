@@ -1,3 +1,16 @@
 ansible all --key-file ~/.ssh/ansible -i inventory -m ping 
 ansible all -m ping
 ansible all -m gather_facts
+ansible all --list-hosts 
+ansible all -a "df -h"
+ansible vm1 -b -m apt -a "name=chrony state=present" --become --ask-become-pass
+ansible AlpineVCT -m command -a "cat /etc/os-release" #find OS 
+ansible AlpineCT -b -m community.general.apk -a "name=python3 state=present update_cache=yes"
+ansible AlpineCT -b -m apt -a "name=python3 state=present update_cache=yes"
+ansible AlpineCT -b -m dnf -a "name=python3 state=present update_cache=yes"
+ansible AlpineCT -b -m service -a "name=chronyd state=started \ enabled=yes"
+ansible AlpineCT -b -m apt -a "name=chrony state=present"  
+
+Don’t run chronyd inside a container
+In LXC containers, the host system handles time synchronization.
+So inside an Alpine container, you can safely disable chronyd entirely:
