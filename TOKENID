@@ -23,7 +23,7 @@ root@pam!UUID
 ssh-copy-id admin@192.168.1.85
 ssh-copy-id root@192.168.1.86
 ssh-copy-id root@192.168.1.87
-ssh-copy-id admin@192.168.1.78
+ssh-copy-id admin@192.168.1.94
 
 systemctl daemon-reload
 systemctl restart ssh.socket
