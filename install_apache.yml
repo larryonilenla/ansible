@@ -1,4 +1,4 @@
-- hosts: RHEL2VM
+- hosts: vm2
   become: true
 
   tasks:

@@ -9,7 +9,7 @@ root@pam!UUID
     sudo pacman -S openssh # For Arch-based systems
 
 
-        sudo apt install python3 # For Debian/Ubuntu-based systems
+    sudo apt install python3 # For Debian/Ubuntu-based systems
     sudo dnf install python3 # For Fedora/RHEL-based systems
     sudo pacman -S python # For Arch-based systems
 

@@ -1,0 +1,25 @@
+- hosts: RHEL2VM
+  become: true
+
+  tasks:
+    - name: Create User
+      user:
+        name: admin
+        state: present
+        groups: wheel
+        append: yes
+        password: "{{ 'YourEncryptedPasswordHere' }}"
+        update_password: on_create  
+    - name: Ensure sudo privileges for the user
+      copy:
+        dest: /etc/sudoers.d/admin
+        content: "admin ALL=(ALL) NOPASSWD: ALL\n"
+        mode: '0440'
+    - name: Verify user creation
+      command: id admin
+      register: user_check
+    - debug:
+        var: user_check.stdout
+        msg: "User creation verification"
+        when: user_check.rc == 0
+        

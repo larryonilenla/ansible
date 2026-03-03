@@ -1,0 +1,17 @@
+- hosts: RHEL2VM
+  become: true
+
+  tasks:
+    - name: Create User
+      user:
+        name: admin001
+        state: present
+        groups: wheel
+        append: yes
+        password: "{{ 'admin001' | password_hash('sha512') }}"
+        update_password: on_create  
+    - name: Ensure sudo privileges for the user
+      copy:
+        dest: /etc/sudoers.d/admin001
+        content: "admin001 ALL=(ALL) NOPASSWD: ALL\n"
+        mode: '0440'

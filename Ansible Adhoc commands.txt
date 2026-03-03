@@ -18,3 +18,9 @@ In LXC containers, the host system handles time synchronization.
 So inside an Alpine container, you can safely disable chronyd entirely:
 
 Add admin to the sudoers file: usermod -aG wheel admin
+
+sudo dnf install openssh-server -y
+sudo systemctl start sshd
+sudo systemctl enable sshd
+sudo firewall-cmd --zone=public --permanent --add-service=ssh
+sudo firewall-cmd --reload
