@@ -1,6 +1,8 @@
 ---
 collections:
   - name: community.mongodb
+
+roles:
   - name: buluma.os_updates
     # Latest stable version is pulled automatically.
     # You can pin it: version: "1.7.0"
