@@ -1,0 +1,5 @@
+---
+collections:
+  - name: community.mongodb
+    # Latest stable version is pulled automatically.
+    # You can pin it: version: "1.7.0"

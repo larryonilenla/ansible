@@ -1,0 +1,12 @@
+---
+- name: Test connectivity to all hosts
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Ping the host
+      ansible.builtin.ping:
+      register: ping_result
+
+    - name: Show ping results
+      debug:
+        var: ping_result
