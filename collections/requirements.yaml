@@ -1,6 +1,7 @@
 ---
 collections:
   - name: community.mongodb
+  - name: dtvlinux.cis_hardening
 
 roles:
   - name: buluma.os_updates
