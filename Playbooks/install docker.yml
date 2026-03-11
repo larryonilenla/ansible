@@ -11,5 +11,5 @@
         replace: '# \1'
 
     - name: Import geerlingguy.docker role
-      roles:
-        - role: geerlingguy.docker
+      include_role:
+        name: geerlingguy.docker
