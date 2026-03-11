@@ -1,5 +1,3 @@
-roles:
-  - name: buluma.os_updates
-    # Latest stable version is pulled automatically.
-    # You can pin it: version: "1.7.0"
-    #3408173fe9d1c0c2692abd8f4ee233c10ce6e33c
+---
+- name: geerlingguy.docker
+  version: 8.0.0
