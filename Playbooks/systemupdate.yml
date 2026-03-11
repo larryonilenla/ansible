@@ -8,7 +8,7 @@
     - name: Comment out CD-ROM repositories in sources.list
       replace:
         path: /etc/apt/sources.list
-        regexp: '^(deb cdrom:.*)'
+        regexp: '^deb\s+file:/cdrom'
         line: '# \1'
       become: yes
 
