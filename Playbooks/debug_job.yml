@@ -1,0 +1,12 @@
+---
+- name: Verify Environment
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: List all available collections
+      command: ansible-galaxy collection list
+      register: galaxy_list
+
+    - name: Show installed collections
+      debug:
+        msg: "{{ galaxy_list.stdout_lines }}"
