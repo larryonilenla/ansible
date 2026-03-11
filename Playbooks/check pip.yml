@@ -1,0 +1,11 @@
+---
+- name: Check if Docker library is installed
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Check if Docker python library is installed
+      command: pip show docker
+      register: pip_check
+
+    - debug:
+        msg: "Docker library version: {{ pip_check.stdout_lines[1] }}"

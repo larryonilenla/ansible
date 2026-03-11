@@ -19,9 +19,3 @@
       debug:
         msg: "{{ ansible_version.stdout }}"
     
-    - name: Check if Docker python library is installed
-      command: pip show docker
-      register: pip_check
-
-    - debug:
-        msg: "Docker library version: {{ pip_check.stdout_lines[1] }}"
