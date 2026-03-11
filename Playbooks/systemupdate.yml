@@ -9,7 +9,7 @@
       replace:
         path: /etc/apt/sources.list
         regexp: '^(deb cdrom:.*)'
-        replace: '# \1'
+        line: '# \1'
       become: yes
 
     - name: Update system packages
