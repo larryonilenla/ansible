@@ -1,5 +1,5 @@
 - name: Setup Docker on Hosts
   hosts: ubuntuvm3
-  become: false
+  become: true
   roles:
     - role: geerlingguy.docker
