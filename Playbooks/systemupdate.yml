@@ -5,12 +5,13 @@
   become: true
   tasks:
 
-    - name: Comment out CD-ROM repositories in sources.list
+    - name: Comment out cdrom repository lines using replace
       replace:
-        path: /etc/apt/sources.list
-        regexp: '^deb\s+file:/cdrom'
-        line: '# \1'
-      become: yes
+        dest: /etc/apt/sources.list
+        regexp: '^(deb\s+file:/cdrom.*)$'    # Capture the entire line
+        replace: '# \1'                      # Comment it out, preserve content
+      become: true
+      changed_when: false
 
     - name: Update system packages
       include_role:
