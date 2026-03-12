@@ -8,7 +8,7 @@
     - name: Comment out cdrom repository lines using replace
       replace:
         dest: /etc/apt/sources.list
-        regexp: '^(deb\s+file:/cdrom.*)$'    # Capture the entire line
+        regexp: '^(deb (cdrom:|file:/).*)$'    # Capture the entire line
         replace: '# \1'                      # Comment it out, preserve content
       become: true
       changed_when: false
