@@ -1,0 +1,29 @@
+---
+- name: Remediate Python CVE-2026-1299/15366/15367
+  hosts: vulnerable_python
+  become: true
+  tasks:
+    - name: Update apt cache and upgrade specific Python packages
+      ansible.builtin.apt:
+        name:
+          - python3
+          - python3.12
+          - python3-minimal
+          - libpython3.12-stdlib
+        state: latest
+        update_cache: yes
+      register: apt_update
+
+    - name: Restart system to ensure no vulnerable Python code remains in memory
+      ansible.builtin.reboot:
+        msg: "Rebooting to apply security patches for CVE-2026 vulnerabilities"
+      when: apt_update.changed
+
+    - name: Verify the new version
+      ansible.builtin.command: python3 --version
+      register: post_patch_version
+      changed_when: false
+
+    - name: Display final status
+      ansible.builtin.debug:
+        msg: "Remediation complete. New version: {{ post_patch_version.stdout }}"
