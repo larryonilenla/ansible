@@ -1,6 +1,6 @@
 ---
 - name: Remediate Python CVE-2026-1299/15366/15367
-  hosts: vulnerable_python
+  hosts: all
   become: true
   tasks:
     - name: Update apt cache and upgrade specific Python packages
