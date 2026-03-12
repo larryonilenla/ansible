@@ -20,11 +20,15 @@
 
     - name: Flag vulnerable hosts (Ubuntu)
       ansible.builtin.shell: |
-        apt policy python3.12 python3.12-minimal libpython3.12-stdlib libpython3.12 | grep -E 'Installed|Candidate' | grep -E '3\.12\.[0-8]ubuntu0.12'
-      register: apt_vuln_check
-      changed_when: false
+        apt policy python3.12 | grep 'Installed' | grep -q '3\.12\.3-1ubuntu0\.12'
+      register: version_check
       failed_when: false
+      changed_when: false
       when: ansible_pkg_mgr == 'apt'
+    
+    - name: Set vulnerability flag
+      ansible.builtin.set_fact:
+        is_vulnerable: "{{ version_check.rc != 0 }}"
 
 
     - name: Display vulnerable hosts
