@@ -13,6 +13,31 @@
       become: true
       changed_when: false
 
+    - name: Forcefully disable the triple-slash CDROM repo
+      replace:
+        dest: /etc/apt/sources.list
+        regexp: '^(deb .*file:///cdrom.*)$'
+        replace: '# \1'
+      become: yes
+
+    - name: Nuke existing apt lists to clear CDROM errors
+      ansible.builtin.file:
+        path: /var/lib/apt/lists/
+        state: absent
+      become: yes
+
+    - name: Recreate empty lists directory
+      ansible.builtin.file:
+        path: /var/lib/apt/lists/
+        state: directory
+        mode: '0755'
+      become: yes
+
+    - name: Run fresh update to rebuild cache
+      ansible.builtin.apt:
+        update_cache: yes
+      become: yes   
+
     - name: Update system packages
       include_role:
         name: robertdebock.update
