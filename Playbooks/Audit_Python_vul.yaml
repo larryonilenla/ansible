@@ -8,7 +8,7 @@
     
     - name: Debug installed python packages
       ansible.builtin.debug:
-      msg: "{{ ansible_facts.packages.keys() | select('match', '.*python3.*') | list }}"
+        msg: "{{ ansible_facts.packages.keys() | select('match', '.*python3.*') | list }}"
 
     - name: Flag vulnerable hosts (Cross-Platform)
       ansible.builtin.group_by:
