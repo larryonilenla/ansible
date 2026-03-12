@@ -10,17 +10,26 @@
       ansible.builtin.debug:
         msg: "{{ ansible_facts.packages.keys() | select('match', '.*python3.*') | list }}"
 
-    - name: Flag vulnerable hosts (Cross-Platform)
-      ansible.builtin.group_by:
-        key: "vulnerable_python"
-      when: >
-        (ansible_facts.packages['python3-libs'] is defined and ansible_facts.packages['python3-libs'][0].version is version('3.12.9', '<')) or
-        (ansible_facts.packages['python3-minimal'] is defined and ansible_facts.packages['python3-minimal'][0].version is version('3.12.9', '<')) or
-        (ansible_facts.packages['python3'] is defined and ansible_facts.packages['python3'][0].version is version('3.12.9', '<'))
+    #- name: Flag vulnerable hosts (Cross-Platform)
+    #  ansible.builtin.group_by:
+    #    key: "vulnerable_python"
+    #  when: >
+    #    (ansible_facts.packages['python3-libs'] is defined and ansible_facts.packages['python3-libs'][0].version is version('3.12.9', '<')) or
+    #    (ansible_facts.packages['python3-minimal'] is defined and ansible_facts.packages['python3-minimal'][0].version is version('3.12.9', '<')) or
+    #    (ansible_facts.packages['python3'] is defined and ansible_facts.packages['python3'][0].version is version('3.12.9', '<'))
+
+    - name: Flag vulnerable hosts (Ubuntu)
+      ansible.builtin.shell: |
+        apt policy python3.12 python3.12-minimal libpython3.12-stdlib libpython3.12 | grep -E 'Installed|Candidate' | grep -E '3\.12\.[0-8]ubuntu0.12'
+      register: apt_vuln_check
+      changed_when: false
+      failed_when: false
+      when: ansible_pkg_mgr == 'apt'
+
 
     - name: Display vulnerable hosts
       ansible.builtin.debug:
-        msg: "Host {{ inventory_hostname }} is vulnerable to CVE-2026-12345 (Python versions < 3.12.9)"
+        msg: "Host {{ inventory_hostname }} is vulnerable. Installed version: {{ ansible_facts.packages['python3'][0].version if 'python3' in ansible_facts.packages else 'not installed' }}"
       when: "'vulnerable_python' in group_names"
 
     
