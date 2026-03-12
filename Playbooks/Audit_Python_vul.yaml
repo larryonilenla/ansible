@@ -1,0 +1,15 @@
+- name: Audit Python CVE-2026 Vulnerabilities
+  hosts: all
+  become: true
+  tasks:
+    - name: Get Python package version
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Flag vulnerable hosts
+      ansible.builtin.group_by:
+        key: "vulnerable_python"
+      # Example logic: If python3-libs version is older than the fixed version (e.g., 3.12.9)
+      when: 
+        - ansible_facts.packages['python3-libs'] is defined
+        - ansible_facts.packages['python3-libs'][0].version is version('3.12.9', '<')
