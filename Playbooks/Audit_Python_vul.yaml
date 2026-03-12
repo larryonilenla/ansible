@@ -2,14 +2,25 @@
   hosts: all
   become: true
   tasks:
-    - name: Get Python package version
+    - name: Get package facts
       ansible.builtin.package_facts:
         manager: auto
+    
+    - name: Debug installed python packages
+      ansible.builtin.debug:
+      msg: "{{ ansible_facts.packages.keys() | select('match', '.*python3.*') | list }}"
 
-    - name: Flag vulnerable hosts
+    - name: Flag vulnerable hosts (Cross-Platform)
       ansible.builtin.group_by:
         key: "vulnerable_python"
-      # Example logic: If python3-libs version is older than the fixed version (e.g., 3.12.9)
-      when: 
-        - ansible_facts.packages['python3-libs'] is defined
-        - ansible_facts.packages['python3-libs'][0].version is version('3.12.9', '<')
+      when: >
+        (ansible_facts.packages['python3-libs'] is defined and ansible_facts.packages['python3-libs'][0].version is version('3.12.9', '<')) or
+        (ansible_facts.packages['python3-minimal'] is defined and ansible_facts.packages['python3-minimal'][0].version is version('3.12.9', '<')) or
+        (ansible_facts.packages['python3'] is defined and ansible_facts.packages['python3'][0].version is version('3.12.9', '<'))
+
+    - name: Display vulnerable hosts
+      ansible.builtin.debug:
+        msg: "Host {{ inventory_hostname }} is vulnerable to CVE-2026-12345 (Python versions < 3.12.9)"
+      when: "'vulnerable_python' in group_names"
+
+    
