@@ -1,29 +1,56 @@
 ---
-- name: Remediate Python CVE-2026-1299/15366/15367
+- name: Remediate Python CVEs (2026 email/imaplib/poplib issues)
   hosts: all
   become: true
   tasks:
-    - name: Update apt cache and upgrade specific Python packages
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+      when: ansible_pkg_mgr == 'apt'
+
+    - name: Upgrade Python 3.12-related packages (Debian/Ubuntu)
       ansible.builtin.apt:
         name:
           - python3
           - python3.12
+          - python3.12-minimal
           - python3-minimal
           - libpython3.12-stdlib
+          - libpython3.12
         state: latest
-        update_cache: yes
+      when: ansible_pkg_mgr == 'apt'
       register: apt_update
 
-    - name: Restart system to ensure no vulnerable Python code remains in memory
-      ansible.builtin.reboot:
-        msg: "Rebooting to apply security patches for CVE-2026 vulnerabilities"
-      when: apt_update.changed
+    - name: Upgrade Python packages (non-Debian systems)
+      ansible.builtin.package:
+        name: python3*
+        state: latest
+      when: ansible_pkg_mgr != 'apt'
+      register: pkg_update
 
-    - name: Verify the new version
-      ansible.builtin.command: python3 --version
+    - name: Restart relevant services (example - customize per your environment)
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - nginx       # or apache2, gunicorn, uwsgi, etc.
+        - myapp.service
+      when: (apt_update.changed or pkg_update.changed) and ansible_service_mgr == 'systemd'
+
+    # Optional: only reboot as last resort or if policy requires it
+    # - name: Reboot if packages changed (use with caution)
+    #   ansible.builtin.reboot:
+    #     msg: "Rebooting after Python security updates (CVE-2026-1299 etc.)"
+    #   when: (apt_update.changed or pkg_update.changed) and reboot_required | default(false)
+
+    - name: Verify Python 3.12 version after patching
+      ansible.builtin.command: python3.12 --version
       register: post_patch_version
       changed_when: false
+      ignore_errors: true
 
-    - name: Display final status
+    - name: Display remediation status
       ansible.builtin.debug:
-        msg: "Remediation complete. New version: {{ post_patch_version.stdout }}"
+        msg: >
+          Remediation attempted. Python 3.12 version now: {{ post_patch_version.stdout | default('unknown (command failed)') }}
+          If still vulnerable, check distro-specific backport status or manually verify against upstream fixed version.
